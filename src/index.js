@@ -13,11 +13,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const mongoose = require('mongoose')
 
 
-
-mongoose.connect("mongodb+srv://monty-python:SnYUEY4giV9rekw@functionup-backend-coho.0zpfv.mongodb.net/SubhadipaBanerjee_db?retryWrites=true&w=majority", { useNewUrlParser: true })
+let connection_uri = "mongodb+srv://Subhadipa:Subha2022@subhadipa-cluster.qy3xxtm.mongodb.net/url-shortner-db?authSource=admin&replicaSet=atlas-iogo5c-shard-0&readPreference=primary&ssl=true"
+mongoose.connect(connection_uri, { useNewUrlParser: true })
     .then(() => console.log('mongodb running on 3000'))
     .catch(err => console.log(err))
-   
+
 
 app.use('/', route);
 

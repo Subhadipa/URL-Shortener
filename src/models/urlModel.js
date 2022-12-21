@@ -3,27 +3,27 @@ const mongoose = require('mongoose')
 const urlSchema = new mongoose.Schema(
       {
 
-           
+
             "longUrl":
             {
                   type: String,
                   required: true,
-                  trim:true
+                  trim: true
             },
             "shortUrl":
             {
                   type: String,
                   required: true,
-                  unique:true,
-                  trim:true
+                  unique: true,
+                  trim: true
             },
             "urlCode":
             {
                   type: String,
                   required: true,
-                  unique:true,
-                  lowercase:true,
-                  trim:true
+                  unique: true,
+                  lowercase: true,
+                  trim: true
             }
       },
 
@@ -31,4 +31,4 @@ const urlSchema = new mongoose.Schema(
 
 )
 
-module.exports = mongoose.model('urlModel_finals', urlSchema)
+module.exports = mongoose.model('url Model', urlSchema)

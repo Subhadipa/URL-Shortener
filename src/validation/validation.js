@@ -1,6 +1,5 @@
-const isValidReqBody = function(reqBody)
-{ 
-    return Object.keys(reqBody).length > 0 ;     
+const isValidReqBody = function (reqBody) {
+    return Object.keys(reqBody).length > 0;
 }
 const isValid = function (value) {
     if (typeof value === 'undefined' || value === null) return false
@@ -10,4 +9,4 @@ const isValid = function (value) {
 
 
 
-module.exports={isValidReqBody,isValid}
+module.exports = { isValidReqBody, isValid }
