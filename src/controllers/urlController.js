@@ -3,14 +3,11 @@ const validUrl = require('valid-url');
 
 const shortid = require('shortid');
 const validation = require("../validation/validation");
-
-
-//------------------------1.Create URL---------------------------------------------------------
+const BASE_URL=process.env.BASE_URL
 const exportFunc = {
     createUrl: async (req, res) => {
         try {
             if (!validation.isValidReqBody(req.body)) {
-                // Check Req Body is Not Empty or allways >0 if not then pass a msg
                 return res.status(400).send({ status: false, message: "Body data is missing" });
             }
 
@@ -22,62 +19,46 @@ const exportFunc = {
             }
 
             const longUrl = req.body.longUrl.trim()
-            if (!(longUrl.includes('//'))) {
-                return res.status(400).send({ status: false, msg: 'Invalid longUrl' })
-            }
-
+            const baseUrl = BASE_URL
 
             const urlParts = longUrl.split('//')
-            //console.log(urlParts)
             const scheme = urlParts[0]
 
             const uri = urlParts[1]
-            console.log(uri)
             if (!(uri.includes('.'))) {
                 return res.status(400).send({ status: false, msg: 'Invalid longUrl' })
             }
             const uriParts = uri.split('.')
 
-            if (!((scheme == "http:") || (scheme == "https:")) && (uriParts[0].trim().length) && (uriParts[1].trim().length)) {
+            if (!((scheme == "http:") || (scheme == "https:"))) {
                 return res.status(400).send({ status: false, msg: 'Invalid longUrl' })
             }
-            const baseUrl = 'http://localhost:3000'
-
-            if (!validUrl.isUri(baseUrl)) {
-                return res.status(400).send({ status: false, msg: 'Invalid base URL' })
-            }
             const urlCode = shortid.generate().toLowerCase()
-            //console.log(urlCode)
             if (validUrl.isUri(longUrl)) {
                 let url = await urlModel.findOne({ longUrl }).select({ longUrl: 1, shortUrl: 1, urlCode: 1, _id: 0 })
                 if (url) {
 
-                    return res.status(200).send({ status: true, data: url })
+                    return res.status(200).send({ status: true, message:"short url fetched successfully! ",data: url })
 
                 } else {
 
-                    const shortUrl = baseUrl + '/' + urlCode.toLowerCase()
+                    const shortUrl = baseUrl + '/' +urlCode
 
                     let urlData = { longUrl, shortUrl, urlCode }
 
                     const urlInfo = await urlModel.create(urlData);
-                    const urlInfo1 = await urlModel.findOne({ _id: urlInfo._id }).select({ longUrl: 1, shortUrl: 1, urlCode: 1, _id: 0 })
-                    return res.status(201).send({ status: true, msg: urlInfo1 })
+                    return res.status(200).send({ status: true, message:"short url created successfully! ",data: urlInfo })
                 }
+            }else{
+                return res.status(401).send({status:false,message:'Invalid longUrl'})
             }
-            else {
-                return res.status(400).send({ status: false, msg: 'Invalid longUrl' })
-            }
-        }
-        catch (error) {
+            }catch (error) {
 
             return res.status(500).send({ status: false, message: error.message })
         }
 
     },
 
-
-    //----------------------------------------2.Get Url---------------------------------------------------------------
     getUrl: async (req, res) => {
         try {
             let originalUrlDetails = await urlModel.findOne({ urlCode: req.params.urlCode });
@@ -90,8 +71,7 @@ const exportFunc = {
 
         }
         catch (error) {
-            console.log(error.stack)
-            return res.status(500).send({ status: false, message: error.stack })
+            return res.status(500).send({ status: false, message: error.message })
         }
     }
 }
